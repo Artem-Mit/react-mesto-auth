@@ -1,0 +1,19 @@
+.profile__avatar {
+  max-height: 100%;
+  max-width: 100%;
+  border-radius: 50%;
+  background-color: #000;
+  transition: opacity .5s ease;
+}
+
+.profile__avatar:hover {
+  cursor: pointer;
+  opacity: 0.2;
+
+}
+
+@media screen and (max-width: 760px) {
+  .profile__avatar {
+    margin: 0 auto;
+  }
+}

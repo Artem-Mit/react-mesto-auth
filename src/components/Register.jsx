@@ -1,0 +1,42 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import Auth from "./Auth";
+
+function Register() {
+  const [formValues, setFormValues] = useState({ email: "", password: "" });
+
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+    setFormValues((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  return (
+    <>
+      <Auth
+        title={"Регистрация"}
+        name={"regForm"}
+        buttonText={"Зарегистрироваться"}
+      >
+        <input
+          onChange={handleChange}
+          type="email"
+          className="auth__input"
+          name="emailInput"
+          placeholder="Email"
+          required
+        />
+        <input
+          onChange={handleChange}
+          type="password"
+          className="auth__input"
+          name="passwordInput"
+          placeholder="Пароль"
+          autoComplete="on"
+          required
+        />
+      </Auth>
+    </>
+  );
+}
+
+export default Register;

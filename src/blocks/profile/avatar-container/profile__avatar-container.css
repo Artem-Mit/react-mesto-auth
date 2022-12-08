@@ -1,0 +1,11 @@
+.profile__avatar-container {
+  border-radius: 50%;
+  margin-right: 30px;
+  max-height: 120px;
+  max-width: 120px;
+  background-color: rgba(0, 0, 0);
+  background-image: url(../../../images/avatar_btn.png);
+  background-position: center;
+  background-size: 26px 26px;
+  background-repeat: no-repeat;
+}

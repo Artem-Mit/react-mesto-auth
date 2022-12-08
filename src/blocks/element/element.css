@@ -1,0 +1,10 @@
+.element {
+  display: flex;
+  flex-direction: column;
+  width: 282px;
+  min-height: 361px;
+  background: #FFF;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}

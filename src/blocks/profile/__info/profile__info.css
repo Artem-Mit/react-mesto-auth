@@ -1,0 +1,22 @@
+.profile__info {
+  display: grid;
+  column-gap: 18px;
+  row-gap: 16px;
+  grid-template-areas:
+  "name btn"
+  "prof prof";
+}
+
+@media screen and (max-width: 760px) {
+  .profile__info {
+    margin-top: 22px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .profile__info {
+    margin-top: 22px;
+    column-gap: 10px;
+    row-gap: 8px;
+  }
+}

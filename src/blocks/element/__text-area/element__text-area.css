@@ -1,0 +1,8 @@
+.element__text-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 25px;
+  width: 246px;
+}

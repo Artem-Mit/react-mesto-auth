@@ -1,0 +1,14 @@
+.auth__redirect-link {
+  text-align: center;
+  margin-top: 15px;
+  color: #fff;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-decoration: none;
+  transition: opacity .3s ease-in-out;
+}
+
+.auth__redirect-link:hover {
+  opacity: 0.6;
+}
