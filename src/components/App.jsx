@@ -39,10 +39,8 @@ function App() {
       authApi
         .checkIn(token)
         .then((res) => {
-          console.log(res);
           setUserEmail(res.data.email);
           handleLogin();
-          console.log(userEmail);
         })
         .catch((err) => console.log(err.message))
         .finally(() => history.push("/"));
