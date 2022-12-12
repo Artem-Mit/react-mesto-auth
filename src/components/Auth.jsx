@@ -13,7 +13,7 @@ function Auth({ title, name, buttonText, onSubmit, children }) {
         name={`${name}`}
       >
         <fieldset className="auth__fieldset">{children}</fieldset>
-        <button className="auth__button" type="submit">
+        <button className="auth__button" type="submit" onSubmit={onSubmit}>
           {buttonText}
         </button>
       </form>

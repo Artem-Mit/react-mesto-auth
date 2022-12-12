@@ -10,20 +10,46 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Spinner from "./Spinner";
 import ProtectedRoute from "./ProtectedRoute";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
+import authApi from "../utils/authApi";
+import WarningPopup from "./WarningPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isWarningPopupOpen, setisWarningPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({ name: "", link: "" });
   const [currentUser, setCurrentUser] = useState({ name: "", about: "" });
+  const [userEmail, setUserEmail] = useState("");
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingButtonText, setIsLoadingButtonText] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const history = useHistory();
+  const [registerError, setRegisterError] = useState(false);
+
+  /* Проверка имеется ли токен в локальном хранилище */
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      authApi
+        .checkIn(token)
+        .then((res) => {
+          console.log(res);
+          setUserEmail(res.data.email);
+          handleLogin();
+          console.log(userEmail);
+        })
+        .catch((err) => console.log(err.message))
+        .finally(() => history.push("/"));
+    }
+  }, [loggedIn, history, userEmail]);
+
+  /* Загрузка карточек с сервера */
 
   useEffect(() => {
     setIsLoading(true);
@@ -34,6 +60,20 @@ function App() {
       })
       .catch((err) => console.log(err.message));
   }, []);
+
+  /* загрузка информации о пользователе */
+
+  useEffect(() => {
+    api
+      .getProfileInfo()
+      .then((userData) => {
+        setCurrentUser(userData);
+      })
+      .catch((err) => console.log(err.message))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  /* Логика лайков */
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -47,6 +87,7 @@ function App() {
       .catch((err) => console.log(err.message));
   }
 
+  /* Логика удаления карточек */
   function handleCardDelete(card) {
     api
       .deleteCard(card._id)
@@ -56,15 +97,7 @@ function App() {
       .catch((err) => console.log(err.message));
   }
 
-  useEffect(() => {
-    api
-      .getProfileInfo()
-      .then((userData) => {
-        setCurrentUser(userData);
-      })
-      .catch((err) => console.log(err.message))
-      .finally(() => setIsLoading(false));
-  }, []);
+  /* Открытие и закрытие попапов */
 
   function handleCardClick(props) {
     setSelectedCard({ name: props.name, link: props.link });
@@ -82,14 +115,20 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
+  function handleWarningPopupOpen() {
+    setisWarningPopupOpen(true);
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard({ name: "", link: "" });
+    setisWarningPopupOpen(false);
   }
 
   const isOpen =
+    isWarningPopupOpen ||
     isEditAvatarPopupOpen ||
     isEditProfilePopupOpen ||
     isAddPlacePopupOpen ||
@@ -109,6 +148,8 @@ function App() {
     }
   }, [isOpen]);
 
+  /* Обрновление информации о пользователе */
+
   function handleUpdateUser(data) {
     setIsLoadingButtonText(true);
     api
@@ -120,6 +161,8 @@ function App() {
       })
       .catch((err) => console.log(err.message));
   }
+
+  /* Обрновление аватара */
 
   function handleUpdateAvatar(data) {
     setIsLoadingButtonText(true);
@@ -133,6 +176,8 @@ function App() {
       .catch((err) => console.log(err.message));
   }
 
+  /* Добавление новой карточки */
+
   function handleUpdateCards(newCard) {
     setIsLoadingButtonText(true);
     api
@@ -145,10 +190,31 @@ function App() {
       .catch((err) => console.log(err.message));
   }
 
-  return (
+  /* Перевод статуса логина  */
+
+  function handleLogin() {
+    setLoggedIn(true);
+  }
+
+  /* Логика удаления токена из локала для выхода из профиля*/
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setUserEmail("");
+  }
+
+  /* Логика ошибки при регистрации */
+
+  function handleRegisterStatus(status) {
+    setRegisterError(status);
+  }
+
+  return isLoading ? (
+    <Spinner isLoading={isLoading} size={150} />
+  ) : (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page__container">
-        <Header />
+        <Header email={userEmail} onLogout={handleLogout} />
         <Switch>
           <ProtectedRoute
             exact
@@ -164,10 +230,14 @@ function App() {
             onCardDelete={handleCardDelete}
           />
           <Route path="/sign-in">
-            <Login />
+            <Login handleLogin={handleLogin} />
           </Route>
           <Route path="/sign-up">
-            <Register />
+            <Register
+              popupOpener={handleWarningPopupOpen}
+              onSubmit={handleRegisterStatus}
+              onClose={closeAllPopups}
+            />
           </Route>
           <Route>
             {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
@@ -193,6 +263,12 @@ function App() {
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
         onUpdateAvatar={handleUpdateAvatar}
+      />
+      <WarningPopup
+        name={"warning"}
+        isOpen={isWarningPopupOpen}
+        onClose={closeAllPopups}
+        registerFail={registerError}
       />
     </CurrentUserContext.Provider>
   );

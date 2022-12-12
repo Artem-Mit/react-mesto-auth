@@ -1,0 +1,11 @@
+.popup__warning-text {
+  max-width: 358px;
+  margin: 0 auto;
+  padding-bottom: 25px;
+  margin-top: 32px;
+  text-align: center;
+  color: #000;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+}

@@ -4,12 +4,13 @@ class Api {
     this._headers = options.headers;
   }
 
-  _useFetch(link, newMethod = "GET", newBody) {
-    return fetch(`${this._url}${link}`, {
+  async _useFetch(link, newMethod = "GET", newBody) {
+    const res = await fetch(`${this._url}${link}`, {
       method: newMethod,
       headers: this._headers,
       body: JSON.stringify(newBody),
-    }).then((res) => this._checkResult(res));
+    });
+    return this._checkResult(res);
   }
 
   _checkResult(res) {
