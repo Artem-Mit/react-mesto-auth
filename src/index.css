@@ -70,6 +70,8 @@
 @import url(./blocks/auth/__input/auth__input.css);
 @import url(./blocks/auth/__button/auth__button.css);
 @import url(./blocks/auth/__redirect-link/auth__redirect-link.css);
+@import url(./blocks/auth/input-err/auth__input-err.css);
+@import url(./blocks/auth/input-err/_visible/auth__input-err_visible.css);
 
 /* Стили спиннера */
 @import url(./blocks/spinner/spinner.css);

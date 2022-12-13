@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import Auth from "./Auth";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
 
 function Register({ onSubmit }) {
-  const [regData, setRegData] = useState({ email: "", password: "" });
-
-  const handleChange = (evt) => {
-    const { name, value } = evt.target;
-    setRegData((prevState) => ({ ...prevState, [name]: value }));
-  };
+  const { values, handleChange, errors, isValid, resetForm } =
+    useFormAndValidation({ email: "", password: "" });
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    onSubmit(regData)
+    onSubmit(values);
+    resetForm()
   };
 
   return (
@@ -28,8 +26,15 @@ function Register({ onSubmit }) {
         name="email"
         placeholder="Email"
         required
-        value={regData.email}
+        value={values.email}
       />
+      <span
+        className={`auth__input-err ${
+          isValid ? "" : `auth__input-err_visible`
+        }`}
+      >
+        {errors.email}
+      </span>
       <input
         onChange={handleChange}
         type="password"
@@ -38,8 +43,16 @@ function Register({ onSubmit }) {
         placeholder="Пароль"
         autoComplete="on"
         required
-        value={regData.password}
+        value={values.password}
+        minLength={3}
       />
+      <span
+        className={`auth__input-err ${
+          isValid ? "" : `auth__input-err_visible`
+        }`}
+      >
+        {errors.password}
+      </span>
     </Auth>
   );
 }

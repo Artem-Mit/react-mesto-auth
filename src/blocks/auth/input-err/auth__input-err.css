@@ -1,0 +1,16 @@
+.auth__input-err {
+    display: block;
+    margin-top: 5px;
+    min-height: 15px;
+    height: 100%;
+    max-width: 358px;
+    width: 100%;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    color: #FF0000;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    visibility: hidden;
+}

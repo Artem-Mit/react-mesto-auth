@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import Auth from "./Auth";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
 
 function Login({ onSubmit }) {
-  const [loginData, setloginData] = useState({ email: "", password: "" });
-
-
-  const handleChange = (evt) => {
-    const { name, value } = evt.target;
-    setloginData((prevState) => ({ ...prevState, [name]: value }));
-  };
+  const { values, handleChange, errors, isValid, resetForm } =
+    useFormAndValidation({ email: "", password: "" });
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    onSubmit(loginData)
+    onSubmit(values);
+    resetForm();
   };
 
   return (
@@ -29,8 +26,15 @@ function Login({ onSubmit }) {
         name="email"
         placeholder="Email"
         required
-        value={loginData.email}
+        value={values.email}
       />
+      <span
+        className={`auth__input-err ${
+          isValid ? "" : `auth__input-err_visible`
+        }`}
+      >
+        {errors.email}
+      </span>
       <input
         onChange={handleChange}
         type="password"
@@ -39,8 +43,16 @@ function Login({ onSubmit }) {
         placeholder="Пароль"
         autoComplete="on"
         required
-        value={loginData.password}
+        value={values.password}
+        minLength={3}
       />
+      <span
+        className={`auth__input-err ${
+          isValid ? "" : `auth__input-err_visible`
+        }`}
+      >
+        {errors.password}
+      </span>
     </Auth>
   );
 }
