@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import authApi from "../utils/authApi";
 import Auth from "./Auth";
 
-function Register({ popupOpener, onSubmit, onClose }) {
+function Register({ onSubmit }) {
   const [regData, setRegData] = useState({ email: "", password: "" });
-  const history = useHistory();
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -14,23 +11,7 @@ function Register({ popupOpener, onSubmit, onClose }) {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    authApi
-      .register(regData)
-      .then((res) => {
-        if (res) {
-          setRegData(res);
-          onSubmit(false);
-          popupOpener();
-        }
-      })
-      .then(() => {
-        history.push("/sign-in");
-      })
-      .catch((err) => {
-        console.log(err);
-        onSubmit(true);
-        popupOpener();
-      });
+    onSubmit(regData)
   };
 
   return (
@@ -47,6 +28,7 @@ function Register({ popupOpener, onSubmit, onClose }) {
         name="email"
         placeholder="Email"
         required
+        value={regData.email}
       />
       <input
         onChange={handleChange}
@@ -56,6 +38,7 @@ function Register({ popupOpener, onSubmit, onClose }) {
         placeholder="Пароль"
         autoComplete="on"
         required
+        value={regData.password}
       />
     </Auth>
   );

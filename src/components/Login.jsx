@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import authApi from "../utils/authApi";
 import Auth from "./Auth";
 
-function Login({ handleLogin }) {
+function Login({ onSubmit }) {
   const [loginData, setloginData] = useState({ email: "", password: "" });
-  const history = useHistory();
+
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -14,13 +12,7 @@ function Login({ handleLogin }) {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    authApi
-      .login(loginData)
-      .then((res) => {
-        localStorage.setItem("token", res.token);
-        handleLogin();
-      })
-      .then(() => history.push("/"));
+    onSubmit(loginData)
   };
 
   return (
@@ -37,6 +29,7 @@ function Login({ handleLogin }) {
         name="email"
         placeholder="Email"
         required
+        value={loginData.email}
       />
       <input
         onChange={handleChange}
@@ -46,6 +39,7 @@ function Login({ handleLogin }) {
         placeholder="Пароль"
         autoComplete="on"
         required
+        value={loginData.password}
       />
     </Auth>
   );

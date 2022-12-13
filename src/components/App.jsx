@@ -155,7 +155,6 @@ function App() {
       .then((userData) => setCurrentUser(userData))
       .then(() => {
         closeAllPopups();
-        setIsLoadingButtonText(false);
       })
       .catch((err) => console.log(err.message));
   }
@@ -169,9 +168,9 @@ function App() {
       .then((userData) => setCurrentUser(userData))
       .then(() => {
         closeAllPopups();
-        setIsLoadingButtonText(false);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => console.log(err.message))
+      .finally(() => setIsLoadingButtonText(false));
   }
 
   /* Добавление новой карточки */
@@ -183,15 +182,49 @@ function App() {
       .then((res) => setCards([res, ...cards]))
       .then(() => {
         closeAllPopups();
-        setIsLoadingButtonText(false);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => console.log(err.message))
+      .finally(() => setIsLoadingButtonText(false));
   }
 
   /* Перевод статуса логина  */
 
   function handleLogin() {
     setLoggedIn(true);
+  }
+
+  /* Логика логина */
+
+  function handleLoginSubmit(data) {
+    authApi
+      .login(data)
+      .then((res) => {
+        localStorage.setItem("token", res.token);
+        handleLogin();
+      })
+      .then(() => history.push("/"))
+      .catch((err) => console.log(err.message));
+  }
+
+  /* Логика регистрации */
+
+  function handleRegistrationSubmit(data) {
+    authApi
+      .register(data)
+      .then((res) => {
+        if (res) {
+          setRegisterError(false);
+          handleWarningPopupOpen();
+        }
+      })
+      .then(() => {
+        history.push("/sign-in");
+      })
+      .catch((err) => {
+        console.log(err);
+        setRegisterError(true);
+        handleWarningPopupOpen();
+      });
   }
 
   /* Логика удаления токена из локала для выхода из профиля*/
@@ -201,11 +234,6 @@ function App() {
     setUserEmail("");
   }
 
-  /* Логика ошибки при регистрации */
-
-  function handleRegisterStatus(status) {
-    setRegisterError(status);
-  }
 
   return isLoading ? (
     <Spinner isLoading={isLoading} size={150} />
@@ -228,14 +256,10 @@ function App() {
             onCardDelete={handleCardDelete}
           />
           <Route path="/sign-in">
-            <Login handleLogin={handleLogin} />
+            <Login onSubmit={handleLoginSubmit} />
           </Route>
           <Route path="/sign-up">
-            <Register
-              popupOpener={handleWarningPopupOpen}
-              onSubmit={handleRegisterStatus}
-              onClose={closeAllPopups}
-            />
+            <Register onSubmit={handleRegistrationSubmit} />
           </Route>
           <Route>
             {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
