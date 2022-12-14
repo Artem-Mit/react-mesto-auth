@@ -156,7 +156,8 @@ function App() {
       .then(() => {
         closeAllPopups();
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => console.log(err.message))
+      .finally(() => setIsLoadingButtonText(false));
   }
 
   /* Обрновление аватара */
