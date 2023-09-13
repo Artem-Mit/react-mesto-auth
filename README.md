@@ -19,4 +19,4 @@
 * Добавлен функционал регистрации и авторизации пользователя с помощью REST API
 
 
-### [Ссылка на проект](https://artem-mit.github.io/react-mesto-auth/)
+<https://mesto.mitinart.ru/>
